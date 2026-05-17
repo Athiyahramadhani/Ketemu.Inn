@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="form-box">
+    <h2>Form Pelaporan Barang</h2>
+    <form method="POST">
+        <label>Jenis Laporan</label>
+        <select name="jenis_laporan" required>
+            <option value="Barang Hilang">Barang Hilang (Saya kehilangan barang)</option>
+            <option value="Barang Temuan">Barang Temuan (Saya menemukan barang)</option>
+        </select>
+
+        <label>Nama Barang</label>
+        <input type="text" name="nama_barang" placeholder="Contoh: Kunci Motor, KTM" required>
+
+        <label>Kategori</label>
+        <select name="kategori" required>
+            <option value="Dompet">Dompet</option>
+            <option value="Elektronik">Elektronik / Gadget</option>
+            <option value="Dokumen">Dokumen (KTM, KTP, dll)</option>
+            <option value="Kunci">Kunci</option>
+            <option value="Lainnya">Lainnya</option>
+        </select>
+
+        <label>Warna Utama</label>
+        <input type="text" name="warna" placeholder="Contoh: Hitam, Biru" required>
+
+        <label>Lokasi Kampus</label>
+        <select name="lokasi" required>
+            <option value="Kantin">Kantin</option>
+            <option value="Perpus">Perpustakaan</option>
+            <option value="Gedung A">Gedung A</option>
+            <option value="Parkiran">Parkiran</option>
+        </select>
+
+        <label>Tanggal Kejadian</label>
+        <input type="date" name="tanggal" required>
+
+        <label>Ambil Foto / Scan Barang</label>
+        <div class="camera-box">
+            <div id="laser" class="scanner-line"></div>
+            <video id="video" autoplay playsinline style="display:none; width:100%; border-radius:8px;"></video>
+            <canvas id="canvas" style="display:none; width:100%; border-radius:8px;"></canvas>
+            
+            <div id="camera-placeholder" style="padding: 30px 0; color: #94a3b8;">
+                📷 Pilih metode pengambilan gambar di bawah
+            </div>
+
+            <input type="file" id="file-fallback" accept="image/*" style="display:none; margin: 10px auto; width:90%;">
+
+            <div class="btn-group">
+                <button type="button" id="btn-start" class="btn-camera">Aktifkan Kamera Live</button>
+                <button type="button" id="btn-upload-alt" class="btn-camera" style="background:#475569;">Upload File/Foto</button>
+                <button type="button" id="btn-capture" class="btn-camera" style="display:none; background:#f97316;">Ambil Foto (Scan)</button>
+                <button type="button" id="btn-reset" class="btn-camera" style="display:none;">Ulangi</button>
+            </div>
+        </div>
+        <input type="hidden" name="foto_barang" id="foto_barang">
+
+        <label>Ciri Khusus</label>
+        <textarea name="ciri_khusus" rows="3" placeholder="Contoh: Ada gantungan kunci..."></textarea>
+
+        <button type="submit" class="btn-submit">Kirim Laporan & Cek Match</button>
+    </form>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const btnStart = document.getElementById('btn-start');
+    const btnUploadAlt = document.getElementById('btn-upload-alt');
+    const btnCapture = document.getElementById('btn-capture');
+    const btnReset = document.getElementById('btn-reset');
+    const placeholder = document.getElementById('camera-placeholder');
+    const laser = document.getElementById('laser');
+    const fotoInput = document.getElementById('foto_barang');
+    const fileFallback = document.getElementById('file-fallback');
+
+    // Opsi 1: Menyalakan Kamera Live (Memerlukan localhost/HTTPS)
+    btnStart.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            video.srcObject = stream;
+            video.style.display = "block";
+            placeholder.style.display = "none";
+            fileFallback.style.display = "none";
+            btnStart.style.display = "none";
+            btnUploadAlt.style.display = "none";
+            btnCapture.style.display = "inline-block";
+            laser.style.display = "block";
+        } catch (err) {
+            alert("Kamera diblokir browser karena masalah keamanan/protokol lokal. Silakan gunakan tombol 'Upload File/Foto' di sebelah tombol kamera.");
+        }
+    });
+
+    // Ambil Foto dari Kamera Live
+    btnCapture.addEventListener('click', () => {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        fotoInput.value = canvas.toDataURL('image/jpeg');
+        video.style.display = "none";
+        canvas.style.display = "block";
+        btnCapture.style.display = "none";
+        btnReset.style.display = "inline-block";
+        laser.style.display = "none";
+    });
+
+    // Opsi 2: Cadangan Menggunakan Upload File Gambar Langsung
+    btnUploadAlt.addEventListener('click', () => {
+        fileFallback.click();
+    });
+
+    fileFallback.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                fotoInput.value = event.target.result;
+                
+                // Tampilkan gambar di canvas sebagai pratinjau
+                const img = new Image();
+                img.onload = function() {
+                    const context = canvas.getContext('2d');
+                    canvas.width = 400;
+                    canvas.height = 300;
+                    context.drawImage(img, 0, 0, 400, 300);
+                    placeholder.style.display = "none";
+                    canvas.style.display = "block";
+                    btnStart.style.display = "none";
+                    btnUploadAlt.style.display = "none";
+                    btnReset.style.display = "inline-block";
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Reset Tampilan
+    btnReset.addEventListener('click', () => {
+        if(video.srcObject) {
+            video.style.display = "block";
+            btnCapture.style.display = "inline-block";
+            laser.style.display = "block";
+        } else {
+            placeholder.style.display = "block";
+            btnStart.style.display = "inline-block";
+            btnUploadAlt.style.display = "inline-block";
+        }
+        canvas.style.display = "none";
+        btnReset.style.display = "none";
+        fotoInput.value = "";
+        fileFallback.value = "";
+    });
+</script>
+{% endblock %}

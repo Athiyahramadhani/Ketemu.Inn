@@ -1,0 +1,31 @@
+:root {
+    --primary: #4f46e5;
+    --hilang: #ef4444;
+    --temuan: #10b981;
+    --bg: #f3f4f6;
+}
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+nav { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 15px 0; }
+.nav-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+.logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
+nav a { text-decoration: none; color: #555; margin-left: 20px; font-weight: 500; }
+.btn-lapor { background: var(--primary); color: white !important; padding: 8px 16px; border-radius: 6px; }
+.container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+.hero { text-align: center; padding: 4px 0 30px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: relative; border-top: 5px solid #ccc; }
+.card-hilang { border-top-color: var(--hilang); }
+.card-temuan { border-top-color: var(--temuan); }
+.badge { position: absolute; top: 15px; right: 15px; font-size: 11px; padding: 4px 8px; border-radius: 20px; color: white; background: #999; }
+.card-hilang .badge { background: var(--hilang); }
+.card-temuan .badge { background: var(--temuan); }
+.ciri { background: #f9fafb; padding: 8px; border-radius: 4px; font-size: 13px; }
+.status { display: inline-block; margin-top: 10px; font-size: 12px; font-weight: bold; color: #666; }
+.form-box { background: white; max-width: 500px; margin: 0 auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+label { display: block; margin-top: 12px; font-weight: 600; font-size: 14px; }
+input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+.btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+.alert { padding: 15px; border-radius: 6px; margin-bottom: 20px; font-weight: 500; }
+.alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.alert-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.alert-info { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }

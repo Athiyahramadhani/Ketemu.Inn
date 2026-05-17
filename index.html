@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="hero">
+    <h1>Sistem Kehilangan & Penemuan Barang Kampus</h1>
+    <p>Portal terpusat berbasis pencocokan parameter otomatis.</p>
+</div>
+
+<h2>Daftar Laporan Terbaru</h2>
+<div class="grid">
+    {% for item in items %}
+    <div class="card {{ 'card-hilang' if item.jenis_laporan == 'Barang Hilang' else 'card-temuan' }}">
+        <span class="badge">{{ item.jenis_laporan }}</span>
+        
+        {% if item.foto %}
+            <div class="card-img-box">
+                <img src="{{ item.foto }}" alt="Foto Barang">
+            </div>
+        {% else %}
+            <div class="card-img-box no-img">
+                <span>Tidak ada foto</span>
+            </div>
+        {% endif %}
+
+        <h3>{{ item.nama_barang }}</h3>
+        <p><strong>Kategori:</strong> {{ item.kategori }}</p>
+        <p><strong>Warna:</strong> {{ item.warna }}</p>
+        <p><strong>📍 Lokasi:</strong> {{ item.lokasi }}</p>
+        <p><strong>📅 Tanggal:</strong> {{ item.tanggal }}</p>
+        
+        {% if item.ciri_khusus %}
+            <p class="ciri"><em>Ciri: {{ item.ciri_khusus }}</em></p>
+        {% endif %}
+        <div class="card-footer">
+            <span>Status: <b>{{ item.status }}</b></span>
+        </div>
+    </div>
+    {% else %}
+    <p style="grid-column: 1/-1; text-align: center; color: #64748b;">Belum ada data pelaporan.</p>
+    {% endfor %}
+</div>
+{% endblock %}
